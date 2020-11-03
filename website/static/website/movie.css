@@ -55,6 +55,7 @@ body{
     padding: 0px 60px 0px 60px;
     padding-top: 120px;
 }
+
 #primary-movie-poster{
     border-radius: 7px;
     width: 200px;
@@ -62,6 +63,18 @@ body{
 #primary-movie-vertical{
     padding: 30px 0px 0px 100px ;
     width: 100%;
+}
+@media only screen and (max-width: 600px) {
+    #primary-movie-poster{
+        margin: auto;
+    }
+    #movie {
+      display: block;
+    }
+    #primary-movie-vertical{
+        padding: 30px 0px 0px 0px ;
+        width: 100%;
+    }
 }
 #primary-movie-title{
     font-family: 'Verdana', 'Geneva', 'sans-serif';
@@ -118,6 +131,6 @@ body{
     width: 0px;
 }
 .similiar-movie-poster{
-    height: 250px;
+    height: 270px;
     padding: 10px 5px 10px 5px;
 }

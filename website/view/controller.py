@@ -18,7 +18,7 @@ cursorOfMovies = mycol.find()
 for movie in cursorOfMovies:
     listOfMovies.append(movie)
 
-def getSimiliarMovies(genres,imdbid):
+def getSimiliarMovies(genres, countries, imdbid):
     eligibleMovies = {}
     for genre in genres:
         moviesMatchingGenre = mycol.find({"Genre":genre})
@@ -28,10 +28,19 @@ def getSimiliarMovies(genres,imdbid):
                     eligibleMovies[cursor["imdbID"]] += 1
                 else:
                     eligibleMovies[cursor["imdbID"]] = 1
-    ls = [ i[0] for i in sorted([(k,v) for k,v in eligibleMovies.items()], key= lambda x: x[1], reverse=True)][0:6]
+    for country in countries:
+        moviesMatchingCountry = mycol.find({"Country":country})
+        for cursor in moviesMatchingCountry:
+            if cursor["imdbID"] != imdbid:
+                if cursor["imdbID"] in eligibleMovies.keys():
+                    eligibleMovies[cursor["imdbID"]] += 2
+                else:
+                    eligibleMovies[cursor["imdbID"]] = 2        
+    ls = [ i[0] for i in sorted([(k,v) for k,v in eligibleMovies.items()], key= lambda x: x[1], reverse=True)][0:7]
+    returnCursor = mycol.find({"imdbID":{'$in':ls}})
     returnList = []
-    for id in ls:
-        returnList.append(mycol.find_one({"imdbID":id}))
+    for id in returnCursor:
+        returnList.append(id)
     return returnList
 
 
@@ -45,7 +54,7 @@ def View(request):
 def navigate_to_movie(request):
     imdbid = request.GET.get('key', '')
     movie = mycol.find_one({ "imdbID": imdbid })
-    listOfSimiliarMovies = getSimiliarMovies(movie["Genre"], imdbid)
+    listOfSimiliarMovies = getSimiliarMovies(movie["Genre"], movie["Country"], imdbid)
     context = {"movie":movie, "similiarMovies":listOfSimiliarMovies}
     response = render(request, 'movie.html', context)
     return response
