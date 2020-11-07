@@ -1,11 +1,69 @@
 <meta charset="UTF-8">
 {% load static %}
 <link rel="stylesheet" href={% static "website/index.css" %}>
+<script>
+    var editable = false;
+    function handleSlider(value){
+        window.open("/handle_slider")
+    }
+    function toggleFilter(){
+        if (editable){
+            document.getElementById("filters").style.visibility = 'invisible';
+            document.getElementById("filters").style.display = 'none';
+            document.getElementById("toggle-filter").innerText = 'FILTER';
+            editable = false;
+        }
+        else{
+            document.getElementById("filters").style.visibility = 'visible';
+            document.getElementById("filters").style.display = 'flex';
+            document.getElementById("toggle-filter").innerText = 'CANCEL';
+            editable = true;
+        }
+    }
+    function handleSlider(value){
+        console.log(value)
+        document.getElementById('runtime').innerText = value + ' mins';
+    }
+</script>
 <div id="container">
     <div id="fixed">
         <div id="title">MOVIE CATALOG</div>
         <div id="subtitle">IMDb top picks</div>
     </div>
+    <!--todo-->
+    <div id="toggle-container">
+        <button id="toggle-filter" onclick="toggleFilter()">FILTER</button>
+    </div>
+    <form action='filter_list' method='GET'>
+        <div id="filters">
+        <div class="filter">
+            <div class="filter-label">Year</div>
+            <input name="minYear" class="year-filter" type="number" placeholder="min year" min={{ metadata.minYear }} max={{ metadata.maxYear }} />
+            <input name="maxYear" class="year-filter" type="number" placeholder="max year" min={{ metadata.minYear }} max={{ metadata.maxYear }} />
+        </div>
+        <div class="filter">
+            <div id="runtime-container"><div class="filter-label">Runtime</div><div id="runtime"></div></div>
+            <input name="maxRuntime" value= {{ metadata.maxRuntime }} type="range" min=0 max={{ metadata.maxRuntime }} step=1 onchange="handleSlider(this.value)"/>
+        </div>
+        <div class="filter">
+            <div class="filter-label">Category</div>
+            <select name="genre" class="categorical">
+                {% for genre in metadata.genres %}
+                <option value= {{ genre }}>{{ genre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter">
+            <div class="filter-label">Language</div>
+            <select name="language" class="categorical">
+                {% for language in metadata.languages %}
+                    <option value= {{ language }}>{{ language }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button id ="submit-button" type='submit'> Filter</button>
+    </div>
+    </form>
     
     <div id="movies-list">
         {% for i in listOfMovies %}
