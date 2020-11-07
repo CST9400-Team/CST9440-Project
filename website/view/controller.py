@@ -86,7 +86,11 @@ def view_database(request):
     return response
 
 def filter_list(request):
-    newList = [movie for movie in listOfMovies if movie["Year"] > 1995]
+    myQuery = {}
+    if request.GET.get('genre') != None:
+        myQuery['Genre'] = request.GET.get('genre')
+    cursor = mycol.find(myQuery)
+    newList = [movie for movie in cursor]
     context = {"listOfMovies":newList, "metadata": metadata}
     response = render(request, 'index.html', context)
     return response
