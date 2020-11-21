@@ -48,14 +48,16 @@
         <div class="filter">
             <div class="filter-label">Category</div>
             <select name="genre" class="categorical">
+                <option selected value>All Genres</option>
                 {% for genre in metadata.genres %}
-                <option value= {{ genre }}>{{ genre }}</option>
+                    <option value= {{ genre }}>{{ genre }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="filter">
             <div class="filter-label">Language</div>
             <select name="language" class="categorical">
+                <option selected value>All Languages</option>
                 {% for language in metadata.languages %}
                     <option value= {{ language }}>{{ language }}</option>
                 {% endfor %}
@@ -76,7 +78,7 @@
                         <div class="movie-left-details">
                             <div class="movie-year">{{ i.Year }}</div>
                             <div class="separator">•</div>
-                            <div class="movie-runtime">{{ i.Runtime }}</div>
+                            <div class="movie-runtime">{{ i.Runtime }} mins</div>
                         </div>
                         <div class="movie-right-details">
                             <div class="movie-rating">{{ i.imdbRating }} ⭐</div>

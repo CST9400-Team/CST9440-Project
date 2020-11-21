@@ -23,7 +23,7 @@ mydb = myclient["testDB"]
 mycol = mydb["testCollection"]
 
 #cursorOfMovies is a cursor object that stores all movies from DB
-cursorOfMovies = mycol.find()
+cursorOfMovies = mycol.find() # select * from DB where Name = 1
 
 for movie in cursorOfMovies:
     listOfMovies.append(movie)
@@ -40,7 +40,6 @@ for movie in cursorOfMovies:
          metadata["minYear"] = movie["Year"]
     if movie["Runtime"] > metadata["maxRuntime"]:
          metadata["maxRuntime"] = movie["Runtime"]
-print(metadata)
 
 def getSimiliarMovies(genres, countries, imdbid):
     eligibleMovies = {}
@@ -85,12 +84,30 @@ def view_database(request):
     response = render(request, 'database.html', context)
     return response
 
+#<---------------------------------------TODO-------------------------------------------->
 def filter_list(request):
+    #Dictionary to store our database query
     myQuery = {}
-    if request.GET.get('genre') != None:
+
+    if request.GET.get('genre') != "":
         myQuery['Genre'] = request.GET.get('genre')
+    if request.GET.get('minYear') != "" and request.GET.get('maxYear') != "":
+        myQuery['Year'] = {"$gte": int(request.GET.get('minYear')), "$lte": int(request.GET.get('maxYear'))}
+    elif request.GET.get('minYear') != "":
+        myQuery['Year'] = {"$gte": int(request.GET.get('minYear'))}
+    elif request.GET.get('maxYear') != "":
+        myQuery['Year'] = {"$lte": int(request.GET.get('maxYear'))}
+    if request.GET.get('maxRuntime') != "":
+        myQuery['Runtime'] = {"$lte": int(request.GET.get('maxRuntime'))}
+    if request.GET.get('language') != "":
+        myQuery['Language'] = request.GET.get('language')
+    print(myQuery)
     cursor = mycol.find(myQuery)
+
+    #Convert cursor to list
     newList = [movie for movie in cursor]
+
+
     context = {"listOfMovies":newList, "metadata": metadata}
     response = render(request, 'index.html', context)
     return response

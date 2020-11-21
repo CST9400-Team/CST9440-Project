@@ -2,6 +2,21 @@
 <meta charset="UTF-8">
 {% load static %}
 <link rel="stylesheet" href={% static "website/movie.css" %}>
+<script>
+    function expandInfo(){
+        var coll = document.getElementById("collapsible");
+        coll.onclick = function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+        content.style.display = "none";
+        } else {
+        content.style.display = "block";
+        }
+    };
+        
+    }
+</script>
 <div id="container">
     <div id="fixed">
         <a id="home" href="/">
@@ -33,9 +48,22 @@
                     <div id="primary-movie-plot">
                         {{ movie.Plot }}
                     </div>
-
+                    <div id="primary-movie-languages">
+                        {{ movie.Language|join:", " }}
+                    </div>
                     <div id="primary-movie-button-container">
                         <a id="primary-movie-button" href={% static "website/video.mp4" %}>Watch</a>
+                    </div>
+                    <div id="primary-movie-more-info">
+                        <button id="collapsible" onclick="expandInfo()">More information</button>
+                        <div class="content">
+                            Director: {{ movie.Directors|join:", " }} <br>
+                            Writer: {{ movie.Writer }} <br>
+                            Actors: {{ movie.Actors|join:", " }} <br>
+                            Country: {{ movie.Country|join:", " }} <br>
+                            Awards: {{ movie.Awards }} <br>
+                            Production House: {{  movie.Productions|join:", " }} <br>
+                          </div>
                     </div>
                 </div>
             </div>
